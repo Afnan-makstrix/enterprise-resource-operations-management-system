@@ -81,3 +81,4 @@ jobs:
       - name: Build Production Frontend Assets
         working-directory: frontend
         run: npm run build
+

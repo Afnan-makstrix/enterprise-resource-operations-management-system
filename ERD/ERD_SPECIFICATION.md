@@ -221,3 +221,4 @@ erDiagram
 4. **Strategic Denormalization (Generated Columns & Materialized Views):**
    - `sales_invoices.balance_due` is implemented as `GENERATED ALWAYS AS (total_amount - paid_amount) STORED`. This guarantees 100% mathematical consistency without application-layer divergence while retaining zero read overhead.
    - `mv_monthly_financial_summary` pre-aggregates gross sales, accounts payable receipts, and payroll into a refreshable materialized view indexed by `transaction_month`.
+

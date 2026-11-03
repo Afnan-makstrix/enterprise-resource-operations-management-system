@@ -115,3 +115,4 @@
 
 ### `GET /analytics/execute-query/{query_number}`
 - **Description:** Dynamic execution laboratory executing advanced SQL queries (Q01 to Q30) directly against the PostgreSQL database and returning tabular data with column metadata.
+

@@ -149,3 +149,4 @@ CREATE POLICY rls_payroll_employee_self ON payroll_records
 | `idx_invoices_balance_due_unpaid` | `sales_invoices` | Partial B-Tree | Indexes only rows where `balance_due > 0`, speeding up overdue AR searches by **3.39x**. |
 | `idx_notifications_unread_priority` | `notifications` | Partial B-Tree | Indexes only rows where `is_read = FALSE`, providing a **9.05x speedup**. |
 | `idx_audit_logs_old_gin` | `audit_logs` | GIN (JSONB) | Sub-millisecond containment searches (`@>`) on historical JSON audit trails. |
+
