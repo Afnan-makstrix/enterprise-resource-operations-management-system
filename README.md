@@ -4,6 +4,7 @@
 ### High-Performance Enterprise Relational Database Architecture & Full-Stack Platform
 
 [![PostgreSQL 16.4](https://img.shields.io/badge/PostgreSQL-16.4-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Online%20Platform-success?style=for-the-badge&logo=github)](https://afnan-makstrix.github.io/enterprise-resource-operations-management-system/)
 [![Python 3.13](https://img.shields.io/badge/Python-3.13-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![React 19](https://img.shields.io/badge/React-19.0-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
@@ -11,6 +12,11 @@
 [![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 [![Tests Passing](https://img.shields.io/badge/Pytest-19%2F19%20Passed-44CC11?style=for-the-badge&logo=pytest&logoColor=white)](#14-automated-testing-suite)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+
+<br/>
+
+> 🌐 **Live Interactive Application:** [https://afnan-makstrix.github.io/enterprise-resource-operations-management-system/](https://afnan-makstrix.github.io/enterprise-resource-operations-management-system/)  
+> Explore the live executive dashboard, 10,010-record workforce directory, recursive CTE organizational hierarchy, and interactive SQL query explorer directly in your browser!
 
 <br/>
 
@@ -595,3 +601,4 @@ tests/test_database_integrity.py::test_acid_transaction_rollback PASSED         
 <div align="center">
   <sub>Built with ❤️ using PostgreSQL 16.4, Python FastAPI, SQLAlchemy 2.0, React 19, and Tailwind CSS.</sub>
 </div>
+
