@@ -1,0 +1,83 @@
+name: EROMS Enterprise CI Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  backend-and-database:
+    name: Database Integrity & Backend API Tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: eroms_admin
+          POSTGRES_PASSWORD: eroms_secure_password_2026
+          POSTGRES_DB: eroms_test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Initialize PostgreSQL Database Schemas & Logic
+        env:
+          PGPASSWORD: eroms_secure_password_2026
+        run: |
+          psql -h localhost -U eroms_admin -d eroms_test_db -f sql/schema.sql
+          psql -h localhost -U eroms_admin -d eroms_test_db -f sql/triggers_and_procedures.sql
+          psql -h localhost -U eroms_admin -d eroms_test_db -f sql/views_and_materialized_views.sql
+          psql -h localhost -U eroms_admin -d eroms_test_db -f sql/security_and_rls.sql
+          psql -h localhost -U eroms_admin -d eroms_test_db -f sql/indexing_strategies.sql
+
+      - name: Run Pytest Automated Suite
+        env:
+          DATABASE_URL: postgresql+psycopg2://eroms_admin:eroms_secure_password_2026@localhost:5432/eroms_test_db
+          SECRET_KEY: enterprise_test_secret_key_minimum_32_characters_long_12345
+          ENVIRONMENT: testing
+        run: |
+          pytest tests/ -v
+
+  frontend:
+    name: Frontend React & Tailwind Build Verification
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: frontend/package.json
+
+      - name: Install Frontend Dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build Production Frontend Assets
+        working-directory: frontend
+        run: npm run build
