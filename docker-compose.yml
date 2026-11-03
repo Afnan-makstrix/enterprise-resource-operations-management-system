@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: eroms_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER:-eroms_admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-eroms_secure_password_2026}
+      POSTGRES_DB: ${DB_NAME:-eroms_enterprise_db}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./sql/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-eroms_admin} -d ${DB_NAME:-eroms_enterprise_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - eroms-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: eroms_backend
+    restart: always
+    environment:
+      - ENVIRONMENT=production
+      - DB_HOST=postgres-db
+      - DB_PORT=5432
+      - DB_USER=${DB_USER:-eroms_admin}
+      - DB_PASSWORD=${DB_PASSWORD:-eroms_secure_password_2026}
+      - DB_NAME=${DB_NAME:-eroms_enterprise_db}
+      - SECRET_KEY=${SECRET_KEY:-enterprise_super_secret_jwt_key_change_in_production_min_32_bytes_long_12345}
+      - DATABASE_URL=postgresql://${DB_USER:-eroms_admin}:${DB_PASSWORD:-eroms_secure_password_2026}@postgres-db:5432/${DB_NAME:-eroms_enterprise_db}
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app/backend
+      - ./sql:/app/sql
+    networks:
+      - eroms-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: eroms_frontend
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - eroms-network
+
+  db-admin:
+    image: adminer:latest
+    container_name: eroms_adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres-db
+    networks:
+      - eroms-network
+
+volumes:
+  pgdata:
+    driver: local
+
+networks:
+  eroms-network:
+    driver: bridge
